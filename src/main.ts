@@ -2,6 +2,8 @@ import * as core from '@actions/core'
 import * as github from '@actions/github'
 import * as helpers from './helpers'
 import {RequestError} from '@octokit/request-error'
+import * as utils from '@actions/utils'
+import * as semver from 'semver'
 
 async function run(): Promise<void> {
   try {
@@ -13,20 +15,36 @@ async function run(): Promise<void> {
     const {owner: owner, repo: repo} = github.context.repo
     const sha = github.context.sha
 
-    const releaseVersion = await helpers.getReleaseVersion(octokit, owner, repo, sha)
-    if (!releaseVersion) {
-      core.warning('Could not determine the release version, ignoring commit')
-      return
-    }
+    let releaseTagName: string
+    let releaseVersion: semver.SemVer | null
 
-    core.info(`Creating tag for version ${releaseVersion}`)
-    const releaseTagName = `${tagPrefix}${releaseVersion.version}`
-    await octokit.rest.git.createRef({
-      owner,
-      repo,
-      ref: `refs/tags/${releaseTagName}`,
-      sha
-    })
+    if (utils.gitEventIsPushTag()) {
+      core.debug('Getting version from pushed tag')
+      releaseTagName = utils.getGitRef()
+
+      releaseVersion = semver.coerce(releaseTagName)
+      if (!releaseVersion) {
+        core.warning(`Tag is not a valid version: ${releaseTagName}, ignoring event`)
+        return
+      }
+    } else {
+      core.debug('Getting version from related pull-requests')
+      releaseVersion = await helpers.getReleaseVersion(octokit, owner, repo, sha)
+      if (!releaseVersion) {
+        core.warning('Could not determine the release version, ignoring event')
+        return
+      }
+
+      releaseTagName = `${tagPrefix}${releaseVersion.version}`
+
+      core.info(`Creating tag for version ${releaseVersion}`)
+      await octokit.rest.git.createRef({
+        owner,
+        repo,
+        ref: `refs/tags/${releaseTagName}`,
+        sha
+      })
+    }
 
     core.info(`Creating release for tag ${releaseTagName}`)
     await octokit.rest.repos.createRelease({
