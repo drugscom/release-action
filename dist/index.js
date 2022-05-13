@@ -142,7 +142,7 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const token = core.getInput('token');
-            const tagPrefix = core.getInput('tag-prefixs');
+            const tagPrefix = core.getInput('tag-prefix');
             const updateMajor = core.getBooleanInput('update-major-tag');
             const octokit = github.getOctokit(token);
             const { owner: owner, repo: repo } = github.context.repo;
