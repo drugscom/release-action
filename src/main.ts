@@ -13,6 +13,8 @@ async function run(): Promise<void> {
     const {owner: owner, repo: repo} = github.context.repo
     const sha = github.context.sha
 
+
+
     const releaseVersion = await helpers.getReleaseVersion(octokit, owner, repo, sha)
     if (!releaseVersion) {
       core.warning('Could not determine the release version, ignoring commit')
