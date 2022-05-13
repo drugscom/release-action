@@ -1,0 +1,18 @@
+name: 'New Release Action'
+description: 'Creates a new GitHub release from the current commit'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
+inputs:
+  token:
+    description: Authentication token used to create releases
+    required: true
+    default: ${{ github.token }}
+  tag-prefix:
+    description: Prefix to use on the release tag, defaults to "v" (e.g v1.0.0)
+    required: true
+    default: v
+  update-major-tag:
+    description: If the action should also update the major tag (e.g. v1)
+    required: false
+    default: 'false'

@@ -1,0 +1,42 @@
+{
+  "name": "release-action",
+  "version": "1.0.0",
+  "description": "Creates a new GitHub release from the current commit",
+  "main": "lib/main.js",
+  "types": "lib/main.d.ts",
+  "scripts": {
+    "build": "tsc && ncc build --transpile-only",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drugscom/release-action.git"
+  },
+  "keywords": [
+    "github",
+    "actions"
+  ],
+  "author": "Drugs.com",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/drugscom/release-action/issues"
+  },
+  "homepage": "https://github.com/drugscom/release-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.8.0",
+    "@actions/github": "^5.0.1",
+    "@actions/glob": "^0.3.0",
+    "@actions/utils": "git+https://github.com/drugscom/actions-utils.git",
+    "semver": "^7.3.7"
+  },
+  "private": true,
+  "devDependencies": {
+    "@types/node": "^16.11.34",
+    "@types/semver": "^7.3.9",
+    "@vercel/ncc": "^0.33.4",
+    "eslint": "^8.15.0",
+    "eslint-import-resolver-typescript": "^2.7.1",
+    "eslint-plugin-github": "^4.3.6",
+    "typescript": "^4.6.4"
+  }
+}
