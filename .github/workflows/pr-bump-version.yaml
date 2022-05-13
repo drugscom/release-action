@@ -29,7 +29,7 @@ jobs:
         if: startsWith(github.event.label.name, 'release:')
         env:
           LABEL_NAME: ${{ github.event.label.name }}
-        run: npm version "${LABEL_NAME##release:}"
+        run: npm --no-git-tag-version version "${LABEL_NAME##release:}"
       - name: Push changes
         run: |
           git config --local user.name '${{ github.actor }}'
