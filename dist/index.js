@@ -42,31 +42,20 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getReleaseVersion = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const semver = __importStar(__nccwpck_require__(1383));
-const utils = __importStar(__nccwpck_require__(2682));
 function getReleaseVersion(octokit, owner, repo, sha) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (utils.gitEventIsPushTag()) {
-            core.debug('Getting version from pushed tag');
-            const versionRaw = utils.getGitRef();
-            const version = semver.coerce(versionRaw);
-            if (!version) {
-                core.warning(`Tag is not a valid version: ${versionRaw}`);
-                return;
-            }
-            return version;
-        }
-        core.debug('Finding related PRs');
+        core.debug('Finding related pull-requests');
         const { data: relatedPRs } = yield octokit.rest.search.issuesAndPullRequests({
             q: `type:pr state:closed is:merged label:release:major,release:minor,release:patch repo:${owner}/${repo} SHA:${sha}`,
             sort: 'created',
             per_page: 1
         });
         if (relatedPRs.total_count < 1) {
-            core.warning(`No release PR found for commit: ${sha}`);
-            return;
+            core.warning(`No release pull-request found for commit: ${sha}`);
+            return null;
         }
         if (relatedPRs.total_count > 1) {
-            core.warning(`Multiple PRs found for commit "${sha}", will use the most recent`);
+            core.warning(`Multiple pull-requests found for commit "${sha}", will use the most recent`);
         }
         core.debug('Getting release type');
         const releaseType = getReleaseType(relatedPRs.items[0]);
@@ -138,6 +127,8 @@ const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const helpers = __importStar(__nccwpck_require__(5008));
 const request_error_1 = __nccwpck_require__(537);
+const utils = __importStar(__nccwpck_require__(2682));
+const semver = __importStar(__nccwpck_require__(1383));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -147,19 +138,33 @@ function run() {
             const octokit = github.getOctokit(token);
             const { owner: owner, repo: repo } = github.context.repo;
             const sha = github.context.sha;
-            const releaseVersion = yield helpers.getReleaseVersion(octokit, owner, repo, sha);
-            if (!releaseVersion) {
-                core.warning('Could not determine the release version, ignoring commit');
-                return;
+            let releaseTagName;
+            let releaseVersion;
+            if (utils.gitEventIsPushTag()) {
+                core.debug('Getting version from pushed tag');
+                releaseTagName = utils.getGitRef();
+                releaseVersion = semver.coerce(releaseTagName);
+                if (!releaseVersion) {
+                    core.warning(`Tag is not a valid version: ${releaseTagName}, ignoring event`);
+                    return;
+                }
             }
-            core.info(`Creating tag for version ${releaseVersion}`);
-            const releaseTagName = `${tagPrefix}${releaseVersion.version}`;
-            yield octokit.rest.git.createRef({
-                owner,
-                repo,
-                ref: `refs/tags/${releaseTagName}`,
-                sha
-            });
+            else {
+                core.debug('Getting version from related pull-requests');
+                releaseVersion = yield helpers.getReleaseVersion(octokit, owner, repo, sha);
+                if (!releaseVersion) {
+                    core.warning('Could not determine the release version, ignoring event');
+                    return;
+                }
+                releaseTagName = `${tagPrefix}${releaseVersion.version}`;
+                core.info(`Creating tag for version ${releaseVersion}`);
+                yield octokit.rest.git.createRef({
+                    owner,
+                    repo,
+                    ref: `refs/tags/${releaseTagName}`,
+                    sha
+                });
+            }
             core.info(`Creating release for tag ${releaseTagName}`);
             yield octokit.rest.repos.createRelease({
                 owner,
