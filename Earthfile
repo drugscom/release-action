@@ -46,7 +46,7 @@ npm:
 
   ARG update=false
   IF [ "${update}" = "true" ]
-    RUN --no-cache npm --quiet install
+    RUN --no-cache npm --quiet update
     SAVE ARTIFACT package.json AS LOCAL package.json
     SAVE ARTIFACT package-lock.json AS LOCAL package-lock.json
   ELSE
