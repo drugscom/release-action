@@ -12,6 +12,10 @@ concurrency:
 permissions:
   contents: write
 
+env:
+  EARTHLY_CI: 'true'
+  FORCE_COLOR: 1
+
 jobs:
   build:
     name: Test and build
