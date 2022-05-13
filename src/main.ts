@@ -5,7 +5,7 @@ import {RequestError} from '@octokit/request-error'
 
 async function run(): Promise<void> {
   try {
-    const token = core.getInput('token')
+    const token = core.getInput('tokens')
     const tagPrefix = core.getInput('tag-prefix')
     const updateMajor = core.getBooleanInput('update-major-tag')
 
