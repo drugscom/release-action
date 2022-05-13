@@ -6,7 +6,7 @@ name: Reset package version
     types: [unlabeled]
 
 concurrency:
-  group: ${{ github.ref }}
+  group: reset-version/${{ github.repo }}/${{ github.ref }}
   cancel-in-progress: true
 
 permissions:

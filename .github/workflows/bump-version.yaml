@@ -6,7 +6,7 @@ name: Bump package version
     types: [labeled]
 
 concurrency:
-  group: ${{ github.ref }}
+  group: bump-version/${{ github.repo }}/${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
