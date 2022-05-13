@@ -30,7 +30,7 @@ jobs:
       - name: Run CI tests
         run: earthly +test
       - name: Update dist
-        run: earthly +build
+        run: earthly --artifact +build/dist
       - name: Push changes
         run: |
           git config --local user.name '${{ github.actor }}'
