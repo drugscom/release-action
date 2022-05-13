@@ -3,7 +3,6 @@ import * as github from '@actions/github'
 import * as helpers from './helpers'
 import {RequestError} from '@octokit/request-error'
 
-
 async function run(): Promise<void> {
   try {
     const token = core.getInput('token')
