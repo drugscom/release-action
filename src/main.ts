@@ -6,7 +6,7 @@ import {RequestError} from '@octokit/request-error'
 async function run(): Promise<void> {
   try {
     const token = core.getInput('token')
-    const tagPrefix = core.getInput('tag-prefix')
+    const tagPrefix = core.getInput('tag-prefixs')
     const updateMajor = core.getBooleanInput('update-major-tag')
 
     const octokit = github.getOctokit(token)
