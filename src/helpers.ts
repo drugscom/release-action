@@ -1,6 +1,5 @@
 import * as core from '@actions/core'
 import * as semver from 'semver'
-import * as utils from '@actions/utils'
 import {Api} from '@octokit/plugin-rest-endpoint-methods/dist-types/types'
 import {Octokit} from '@octokit/core'
 import {components} from '@octokit/openapi-types'
@@ -10,22 +9,8 @@ export async function getReleaseVersion(
   owner: string,
   repo: string,
   sha: string
-): Promise<semver.SemVer | undefined> {
-  if (utils.gitEventIsPushTag()) {
-    core.debug('Getting version from pushed tag')
-
-    const versionRaw = utils.getGitRef()
-
-    const version = semver.coerce(versionRaw)
-    if (!version) {
-      core.warning(`Tag is not a valid version: ${versionRaw}`)
-      return
-    }
-
-    return version
-  }
-
-  core.debug('Finding related PRs')
+): Promise<semver.SemVer | null> {
+  core.debug('Finding related pull-requests')
   const {data: relatedPRs} = await octokit.rest.search.issuesAndPullRequests({
     q: `type:pr state:closed is:merged label:release:major,release:minor,release:patch repo:${owner}/${repo} SHA:${sha}`,
     sort: 'created',
@@ -33,12 +18,12 @@ export async function getReleaseVersion(
   })
 
   if (relatedPRs.total_count < 1) {
-    core.warning(`No release PR found for commit: ${sha}`)
-    return
+    core.warning(`No release pull-request found for commit: ${sha}`)
+    return null
   }
 
   if (relatedPRs.total_count > 1) {
-    core.warning(`Multiple PRs found for commit "${sha}", will use the most recent`)
+    core.warning(`Multiple pull-requests found for commit "${sha}", will use the most recent`)
   }
 
   core.debug('Getting release type')
