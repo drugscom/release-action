@@ -1,6 +1,6 @@
 {
   "name": "release-action",
-  "version": "1.0.4",
+  "version": "1.0.3",
   "description": "Creates a new GitHub release from the current commit",
   "main": "lib/main.js",
   "types": "lib/main.d.ts",
