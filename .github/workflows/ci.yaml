@@ -11,4 +11,4 @@ permissions:
 jobs:
   test-and-build:
     name: Test and build
-    uses: drugscom/shared-workflows/.github/workflows/gh-actions-ci.yml@v1
+    uses: drugscom/shared-workflows/.github/workflows/gh-actions-node-ci.yml@v1
