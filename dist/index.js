@@ -132,6 +132,7 @@ const semver = __importStar(__nccwpck_require__(1383));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            core.info('test');
             const token = core.getInput('token');
             const tagPrefix = core.getInput('tag-prefix');
             const updateMajor = core.getBooleanInput('update-major-tag');
