@@ -8,7 +8,7 @@ name: CD
   workflow_dispatch:
 
 concurrency:
-  group: cd/${{ github.repo }}/${{ github.ref }}
+  group: CD-new-release/${{ github.repo }}/${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
