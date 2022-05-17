@@ -1,13 +1,9 @@
 ---
-name: Reset package version
+name: Node.js
 
 'on':
   pull_request:
     types: [unlabeled]
-
-concurrency:
-  group: reset-version/${{ github.repo }}/${{ github.ref }}
-  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -15,17 +11,4 @@ permissions:
 jobs:
   reset-version:
     name: Reset package version
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
-      - name: Revert "Bump package version" commit
-        if: startsWith(github.event.label.name, 'release:')
-        run: |
-          git config --local user.name '${{ github.actor }}'
-          git config --local user.email '${{ github.actor }}@users.noreply.github.com'
-          git revert --no-edit ':/Bump package version'
-          git push
+    uses: drugscom/shared-workflows/.github/workflows/node-reset-version.yml@v1

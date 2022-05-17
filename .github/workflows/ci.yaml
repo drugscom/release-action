@@ -6,7 +6,7 @@ name: CI
   workflow_dispatch:
 
 concurrency:
-  group: ci/${{ github.repo }}/${{ github.ref }}
+  group: CI/${{ github.repo }}/${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
