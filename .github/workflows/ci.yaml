@@ -5,36 +5,10 @@ name: CI
   pull_request:
   workflow_dispatch:
 
-concurrency:
-  group: CI/${{ github.repo }}/${{ github.ref }}
-  cancel-in-progress: true
-
 permissions:
   contents: write
 
-env:
-  EARTHLY_CI: 'true'
-  FORCE_COLOR: 1
-
 jobs:
-  build:
+  test-and-build:
     name: Test and build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-      - name: Setup Earthly
-        uses: drugscom/setup-earthly-action@v1
-      - name: Run CI tests
-        run: earthly +test
-      - name: Update dist
-        run: earthly --artifact +build/dist
-      - name: Push changes
-        run: |
-          git config --local user.name '${{ github.actor }}'
-          git config --local user.email '${{ github.actor }}@users.noreply.github.com'
-          git add --all dist/
-          git commit -m 'Update dist' || exit 0
-          git push
+    uses: drugscom/shared-workflows/.github/workflows/gh-actions-ci.yml@v1
