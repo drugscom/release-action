@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  new-release:
     name: Publish release
     runs-on: ubuntu-latest
     steps:
