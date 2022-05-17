@@ -1,5 +1,5 @@
 ---
-name: Bump package version
+name: Node.js
 
 'on':
   pull_request:
@@ -10,4 +10,5 @@ permissions:
 
 jobs:
   bump-version:
+    name: Bump package version
     uses: drugscom/shared-workflows/.github/workflows/node-bump-version.yml@v1
