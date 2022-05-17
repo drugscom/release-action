@@ -7,6 +7,8 @@ import * as semver from 'semver'
 
 async function run(): Promise<void> {
   try {
+    core.info('test')
+
     const token = core.getInput('token')
     const tagPrefix = core.getInput('tag-prefix')
     const updateMajor = core.getBooleanInput('update-major-tag')
