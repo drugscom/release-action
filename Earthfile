@@ -1,6 +1,6 @@
 VERSION 0.6
 
-FROM node:16
+FROM node:20
 WORKDIR /app
 
 all:
@@ -61,7 +61,7 @@ test:
   BUILD +yamllint
 
 yamllint:
-  FROM alpine:3.15
+  FROM alpine:3.19
   RUN apk --quiet --no-progress --no-cache add yamllint
 
   COPY .github ./.github
