@@ -1,7 +1,7 @@
 name: 'New Release Action'
 description: 'Creates a new GitHub release from the current commit'
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
 inputs:
   token:
